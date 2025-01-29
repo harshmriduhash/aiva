@@ -1,5 +1,5 @@
 export interface Message {
-  role: 'user' | 'assistant';
+  role: "user" | "assistant";
   content: string;
   agentName: string;
   timestamp: Date;
@@ -15,7 +15,7 @@ export interface Page {
 
 export interface GameFile extends Page {
   code: string;
-  type: 'file' | 'directory';
+  type: "file" | "directory";
   children?: GameFile[];
 }
 
@@ -26,13 +26,13 @@ export interface GameProject {
 
 export interface SolanaProgram extends Page {
   code: string;
-  type: 'program' | 'module';
+  type: "program" | "module";
   children?: SolanaProgram[];
 }
 
 export interface ProgramChange {
   name: string;
   code: string;
-  action: 'create' | 'update' | 'delete';
+  action: "create" | "update" | "delete";
   reason?: string;
-} 
+}
