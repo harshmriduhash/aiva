@@ -1,4 +1,4 @@
-import { Agent } from '../types';
+import { Agent } from "../types";
 
 export class AgentModel implements Agent {
   constructor(
@@ -9,12 +9,16 @@ export class AgentModel implements Agent {
   ) {}
 
   public toJSON(): string {
-    return JSON.stringify({
-      name: this.name,
-      personality: this.personality,
-      background: this.background,
-      traits: this.traits
-    }, null, 2);
+    return JSON.stringify(
+      {
+        name: this.name,
+        personality: this.personality,
+        background: this.background,
+        traits: this.traits,
+      },
+      null,
+      2
+    );
   }
 
   public static fromJSON(json: string): AgentModel {
