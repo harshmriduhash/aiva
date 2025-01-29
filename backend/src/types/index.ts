@@ -34,14 +34,17 @@ export interface ConversationSummary {
 
 export interface ChatAnalytics {
   mainTopics: string[];
-  agentBehaviorAnalysis: Record<string, {
-    cognitivePatterns: string;
-    emotionalResponses: string;
-    biasesObserved: string[];
-    adaptabilityScore: number;
-    consistencyWithRole: string;
-    uniqueCharacteristics: string[];
-  }>;
+  agentBehaviorAnalysis: Record<
+    string,
+    {
+      cognitivePatterns: string;
+      emotionalResponses: string;
+      biasesObserved: string[];
+      adaptabilityScore: number;
+      consistencyWithRole: string;
+      uniqueCharacteristics: string[];
+    }
+  >;
   interactionDynamics: {
     powerDynamics: string;
     influencePatterns: string[];
