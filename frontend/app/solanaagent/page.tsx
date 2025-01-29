@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import React, { useState, useCallback, useEffect } from 'react';
-import ChatBox from '@/components/ChatBox';
-import Browser from '@/components/Browser';
-import Terminal from '@/components/Terminal';
-import AppLayout from '@/components/AppLayout';
-import { apiService } from '@/services/api';
-import { Message } from '@/types';
+import React, { useState, useCallback, useEffect } from "react";
+import ChatBox from "@/components/ChatBox";
+import Browser from "@/components/Browser";
+import Terminal from "@/components/Terminal";
+import AppLayout from "@/components/AppLayout";
+import { apiService } from "@/services/api";
+import { Message } from "@/types";
 
 interface Program {
   name: string;
@@ -24,7 +24,7 @@ interface Program {
 export default function SolanaAgentPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [currentCode, setCurrentCode] = useState('');
+  const [currentCode, setCurrentCode] = useState("");
   const [terminalMessages, setTerminalMessages] = useState<any[]>([]);
   const [programs, setPrograms] = useState<Program[]>([
     {
@@ -53,73 +53,78 @@ pub fn process_instruction(
     },
   ]);
 
-  const handleSendMessage = useCallback(async (content: string) => {
-    try {
-      setIsLoading(true);
-      const startTime = performance.now();
-      
-      // Add user message
-      const userMessage: Message = {
-        role: 'user',
-        content,
-        agentName: 'User',
-        timestamp: new Date()
-      };
-      setMessages(prev => [...prev, userMessage]);
+  const handleSendMessage = useCallback(
+    async (content: string) => {
+      try {
+        setIsLoading(true);
+        const startTime = performance.now();
 
-      // Get recent messages for context
-      const recentMessages = [...messages.slice(-4), userMessage];
+        // Add user message
+        const userMessage: Message = {
+          role: "user",
+          content,
+          agentName: "User",
+          timestamp: new Date(),
+        };
+        setMessages((prev) => [...prev, userMessage]);
 
-      // Call API
-      const response = await apiService.sendSolanaChatMessage(
-        content,
-        recentMessages,
-        JSON.stringify({
-          name: "lib.rs",
-          code: programs.find(p => p.path === '/lib.rs')?.code || ''
-        })
-      );
+        // Get recent messages for context
+        const recentMessages = [...messages.slice(-4), userMessage];
 
-      // Add AI response
-      setMessages(prev => [
-        ...prev,
-        {
-          role: 'assistant',
-          content: response.response,
-          agentName: 'SolanaAgent',
-          timestamp: new Date()
+        // Call API
+        const response = await apiService.sendSolanaChatMessage(
+          content,
+          recentMessages,
+          JSON.stringify({
+            name: "lib.rs",
+            code: programs.find((p) => p.path === "/lib.rs")?.code || "",
+          })
+        );
+
+        // Add AI response
+        setMessages((prev) => [
+          ...prev,
+          {
+            role: "assistant",
+            content: response.response,
+            agentName: "SolanaAgent",
+            timestamp: new Date(),
+          },
+        ]);
+
+        // Handle code updates
+        if (response.changes?.length) {
+          setPrograms((prev) =>
+            prev.map((prog) => {
+              if (prog.path === "/lib.rs") {
+                return {
+                  ...prog,
+                  code: response.changes[0].code,
+                };
+              }
+              return prog;
+            })
+          );
+          setCurrentCode(response.changes[0].code);
         }
-      ]);
-
-      // Handle code updates
-      if (response.changes?.length) {
-        setPrograms(prev => prev.map(prog => {
-          if (prog.path === '/lib.rs') {
-            return {
-              ...prog,
-              code: response.changes[0].code
-            };
-          }
-          return prog;
-        }));
-        setCurrentCode(response.changes[0].code);
+      } catch (error) {
+        console.error("Chat error:", error);
+        setMessages((prev) => [
+          ...prev,
+          {
+            role: "assistant",
+            content:
+              "Sorry, there was an error processing your request. Please try again.",
+            agentName: "SolanaAgent",
+            timestamp: new Date(),
+          },
+        ]);
+      } finally {
+        setIsLoading(false);
       }
-
-    } catch (error) {
-      console.error('Chat error:', error);
-      setMessages(prev => [
-        ...prev,
-        {
-          role: 'assistant',
-          content: 'Sorry, there was an error processing your request. Please try again.',
-          agentName: 'SolanaAgent',
-          timestamp: new Date()
-        }
-      ]);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [messages, programs]);
+    },
+    [messages, programs]
+  );
 
   return (
     <AppLayout>
@@ -153,4 +158,4 @@ pub fn process_instruction(
       </div>
     </AppLayout>
   );
-} 
+}
