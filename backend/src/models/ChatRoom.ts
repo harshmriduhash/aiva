@@ -1,13 +1,10 @@
-import { Message, ChatAnalytics, Agent } from '../types';
+import { Message, ChatAnalytics, Agent } from "../types";
 
 export class ChatRoomModel {
   private messages: Message[] = [];
   private analytics: ChatAnalytics | null = null;
 
-  constructor(
-    public readonly agents: Agent[],
-    public readonly topic: string
-  ) {}
+  constructor(public readonly agents: Agent[], public readonly topic: string) {}
 
   public addMessage(message: Message): void {
     this.messages.push(message);
@@ -26,11 +23,15 @@ export class ChatRoomModel {
   }
 
   public toJSON(): string {
-    return JSON.stringify({
-      agents: this.agents,
-      topic: this.topic,
-      messages: this.messages,
-      analytics: this.analytics
-    }, null, 2);
+    return JSON.stringify(
+      {
+        agents: this.agents,
+        topic: this.topic,
+        messages: this.messages,
+        analytics: this.analytics,
+      },
+      null,
+      2
+    );
   }
 }
