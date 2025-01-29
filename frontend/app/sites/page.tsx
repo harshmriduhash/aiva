@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState, useRef } from 'react';
-import { useRouter } from 'next/navigation';
-import { apiService } from '@/services/api';
-import AppLayout from '@/components/AppLayout';
+import React, { useEffect, useState, useRef } from "react";
+import { useRouter } from "next/navigation";
+import { apiService } from "@/services/api";
+import AppLayout from "@/components/AppLayout";
 
 interface Site {
   siteId: string;
@@ -65,7 +65,7 @@ interface Site {
     role: string;
     expertise: string[];
   };
-  agentType: 'webapp' | 'gamedev';
+  agentType: "webapp" | "gamedev";
 }
 
 function SiteCard({ site }: { site: Site }) {
@@ -82,16 +82,22 @@ function SiteCard({ site }: { site: Site }) {
         {/* Developer Info */}
         <div className="flex items-center space-x-3">
           <img
-            src={site.developer?.avatar || 'https://avatars.githubusercontent.com/u/1?v=4'}
-            alt={site.developer?.name || 'Developer'}
+            src={
+              site.developer?.avatar ||
+              "https://avatars.githubusercontent.com/u/1?v=4"
+            }
+            alt={site.developer?.name || "Developer"}
             className="w-10 h-10 rounded-full border-2 border-cyber-purple"
           />
           <div>
             <h3 className="text-xl font-bold text-cyber-blue group-hover:bg-gradient-to-r group-hover:from-cyber-blue group-hover:to-cyber-purple group-hover:text-transparent group-hover:bg-clip-text transition-all">
-              {site.name || 'Untitled Site'}
+              {site.name || "Untitled Site"}
             </h3>
             <p className="text-sm text-gray-400">
-              by {site.developer?.name || 'Unknown Developer'} • {site.agentType === 'gamedev' ? 'Game Developer' : 'Web Developer'}
+              by {site.developer?.name || "Unknown Developer"} •{" "}
+              {site.agentType === "gamedev"
+                ? "Game Developer"
+                : "Web Developer"}
             </p>
           </div>
         </div>
@@ -99,18 +105,19 @@ function SiteCard({ site }: { site: Site }) {
         {/* Date and Description */}
         <div className="space-y-2">
           <p className="text-sm text-gray-400">
-            {site.createdAt ? new Date(site.createdAt).toLocaleString() : 'No date'}
+            {site.createdAt
+              ? new Date(site.createdAt).toLocaleString()
+              : "No date"}
           </p>
           <p className="text-sm text-gray-400">
-            {site.description || 'No description available'}
+            {site.description || "No description available"}
           </p>
         </div>
 
         {/* Topics */}
 
-
         {/* Performance Metrics */}
-        {site.agentType === 'gamedev' ? (
+        {site.agentType === "gamedev" ? (
           // Game Metrics
           <div className="grid grid-cols-2 gap-2 text-xs">
             <div className="space-y-1">
@@ -132,7 +139,9 @@ function SiteCard({ site }: { site: Site }) {
             <div className="space-y-1">
               <div className="text-gray-400">Complexity</div>
               <div className="font-bold text-cyber-blue">
-                {formatScore(site.technicalDetails?.performance?.htmlComplexity ?? 0)}
+                {formatScore(
+                  site.technicalDetails?.performance?.htmlComplexity ?? 0
+                )}
               </div>
             </div>
             <div className="space-y-1">
@@ -146,14 +155,16 @@ function SiteCard({ site }: { site: Site }) {
 
         {/* Technologies */}
         <div className="flex flex-wrap gap-2">
-          {(site.technicalDetails?.technologies || []).slice(0, 3).map((tech, index) => (
-            <span
-              key={index}
-              className="px-2 py-1 bg-cyber-blue/10 border border-cyber-blue/30 rounded-full text-cyber-blue text-xs"
-            >
-              {tech.name}
-            </span>
-          ))}
+          {(site.technicalDetails?.technologies || [])
+            .slice(0, 3)
+            .map((tech, index) => (
+              <span
+                key={index}
+                className="px-2 py-1 bg-cyber-blue/10 border border-cyber-blue/30 rounded-full text-cyber-blue text-xs"
+              >
+                {tech.name}
+              </span>
+            ))}
           {(site.technicalDetails?.technologies?.length ?? 0) > 3 && (
             <span className="px-2 py-1 bg-cyber-blue/10 border border-cyber-blue/30 rounded-full text-cyber-blue text-xs">
               +{(site.technicalDetails?.technologies?.length ?? 0) - 3} more
@@ -163,47 +174,46 @@ function SiteCard({ site }: { site: Site }) {
 
         {/* Features or Game Mechanics */}
         <div className="flex flex-wrap gap-2">
-          {site.agentType === 'gamedev' ? (
-            // Game Mechanics
-            site.contentAnalysis?.gameMechanics?.slice(0, 2).map((mechanic, index) => (
-              <span
-                key={index}
-                className="px-2 py-1 bg-green-900/30 border border-green-500/30 rounded-full text-green-400 text-xs"
-              >
-                {mechanic}
-              </span>
-            ))
-          ) : (
-            // Key Features
-            site.contentAnalysis?.keyFeatures?.slice(0, 2).map((feature, index) => (
-              <span
-                key={index}
-                className="px-2 py-1 bg-green-900/30 border border-green-500/30 rounded-full text-green-400 text-xs"
-              >
-                {feature}
-              </span>
-            ))
-          )}
-          {site.agentType === 'gamedev' ? (
-            (site.contentAnalysis?.gameMechanics?.length ?? 0) > 2 && (
-              <span className="px-2 py-1 bg-green-900/30 border border-green-500/30 rounded-full text-green-400 text-xs">
-                +{(site.contentAnalysis?.gameMechanics?.length ?? 0) - 2} more
-              </span>
-            )
-          ) : (
-            (site.contentAnalysis?.keyFeatures?.length ?? 0) > 2 && (
-              <span className="px-2 py-1 bg-green-900/30 border border-green-500/30 rounded-full text-green-400 text-xs">
-                +{(site.contentAnalysis?.keyFeatures?.length ?? 0) - 2} more
-              </span>
-            )
-          )}
+          {site.agentType === "gamedev"
+            ? // Game Mechanics
+              site.contentAnalysis?.gameMechanics
+                ?.slice(0, 2)
+                .map((mechanic, index) => (
+                  <span
+                    key={index}
+                    className="px-2 py-1 bg-green-900/30 border border-green-500/30 rounded-full text-green-400 text-xs"
+                  >
+                    {mechanic}
+                  </span>
+                ))
+            : // Key Features
+              site.contentAnalysis?.keyFeatures
+                ?.slice(0, 2)
+                .map((feature, index) => (
+                  <span
+                    key={index}
+                    className="px-2 py-1 bg-green-900/30 border border-green-500/30 rounded-full text-green-400 text-xs"
+                  >
+                    {feature}
+                  </span>
+                ))}
+          {site.agentType === "gamedev"
+            ? (site.contentAnalysis?.gameMechanics?.length ?? 0) > 2 && (
+                <span className="px-2 py-1 bg-green-900/30 border border-green-500/30 rounded-full text-green-400 text-xs">
+                  +{(site.contentAnalysis?.gameMechanics?.length ?? 0) - 2} more
+                </span>
+              )
+            : (site.contentAnalysis?.keyFeatures?.length ?? 0) > 2 && (
+                <span className="px-2 py-1 bg-green-900/30 border border-green-500/30 rounded-full text-green-400 text-xs">
+                  +{(site.contentAnalysis?.keyFeatures?.length ?? 0) - 2} more
+                </span>
+              )}
         </div>
 
         {/* Footer Stats */}
         <div className="flex justify-between items-center text-sm">
- 
           <div className="flex items-center text-cyber-blue group-hover:translate-x-1 transition-transform">
-            {site.agentType === 'gamedev' ? 'Preview Game' : 'Preview Site'}
+            {site.agentType === "gamedev" ? "Preview Game" : "Preview Site"}
             <span className="ml-1">→</span>
           </div>
         </div>
@@ -216,7 +226,7 @@ export default function SiteLibrary() {
   const router = useRouter();
   const [sites, setSites] = useState<Site[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [startAfter, setStartAfter] = useState<string | undefined>(undefined);
   const [hasMore, setHasMore] = useState(true);
 
@@ -224,7 +234,8 @@ export default function SiteLibrary() {
   const hasFetched = useRef(false);
 
   // State to track if the minimum loading time has passed
-  const [hasMinimumLoadingTimePassed, setHasMinimumLoadingTimePassed] = useState(false);
+  const [hasMinimumLoadingTimePassed, setHasMinimumLoadingTimePassed] =
+    useState(false);
 
   useEffect(() => {
     if (!hasFetched.current) {
@@ -248,7 +259,7 @@ export default function SiteLibrary() {
       setStartAfter(result.nextStartAfter);
     } catch (err) {
       console.error(err);
-      setError('Failed to load sites');
+      setError("Failed to load sites");
     } finally {
       setIsLoading(false);
     }
@@ -277,9 +288,7 @@ export default function SiteLibrary() {
           {/* Sites Grid */}
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {sites.length > 0 ? (
-              sites.map((site) => (
-                <SiteCard key={site.siteId} site={site} />
-              ))
+              sites.map((site) => <SiteCard key={site.siteId} site={site} />)
             ) : !hasMinimumLoadingTimePassed || isLoading ? (
               // Loading skeletons
               Array.from({ length: 6 }).map((_, i) => (
@@ -295,12 +304,14 @@ export default function SiteLibrary() {
             ) : (
               <div className="col-span-full text-center py-12">
                 <div className="text-6xl mb-4">🌐</div>
-                <h3 className="text-xl font-bold text-cyber-purple mb-2">No Sites Yet</h3>
+                <h3 className="text-xl font-bold text-cyber-purple mb-2">
+                  No Sites Yet
+                </h3>
                 <p className="text-gray-400 mb-6">
                   Start creating your first website
                 </p>
                 <button
-                  onClick={() => router.push('/webappagent')}
+                  onClick={() => router.push("/webappagent")}
                   className="bg-gradient-to-r from-cyber-blue to-cyber-purple text-white font-bold py-3 px-8 rounded-lg hover:opacity-90 transition-opacity"
                 >
                   Create Site
@@ -317,7 +328,7 @@ export default function SiteLibrary() {
                 disabled={isLoading}
                 className="bg-gradient-to-r from-cyber-blue to-cyber-purple text-white font-bold py-3 px-8 rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50"
               >
-                {isLoading ? 'Loading...' : 'Load More Sites'}
+                {isLoading ? "Loading..." : "Load More Sites"}
               </button>
             </div>
           )}
@@ -332,4 +343,4 @@ export default function SiteLibrary() {
       </div>
     </AppLayout>
   );
-} 
+}
