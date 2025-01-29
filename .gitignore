@@ -5,8 +5,7 @@ yarn-debug.log
 yarn-error.log
 
 # Environment
-
-
+.env
 
 # Build output
 dist/
